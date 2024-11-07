@@ -22,6 +22,7 @@ class InverseKinematicsUR3e(Node):
         for angle in joint_positions:
             if abs(angle) > 3.15:
                 joint_positions = [0.0]*6
+                print(f'Joint Angle is greater than pi')
 
         if joint_positions[1] > 0.0873:
             self.get_logger().info(f'z is going below the workbench. Resetting to Zero configuration')
