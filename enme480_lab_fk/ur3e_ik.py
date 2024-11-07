@@ -139,7 +139,7 @@ def main(args=None):
             node.send_command(correct_joint_positions)
             print("--------------------- \n Approximately Correct Laser Prediction \n---------------------")
             KinematicFunctions().predict_laser_position(ur3e_matrix)
-            print("Error in joint angles from IK is large, consult TA")
+            print("Error in joint angles from IK is large, check your math")
         elif valid == 3:
             ur3e_matrix = KinematicFunctions().correct_calculate_dh_transform(correct_joint_positions)
             node.send_command(joint_positions)  # Send the command with updated joint positions
