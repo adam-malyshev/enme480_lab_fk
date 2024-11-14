@@ -128,8 +128,10 @@ def main(args=None):
     for i in range(6):
         if abs(joint_positions[i] - correct_joint_positions[i]) > 0.0873:
             valid = 2
+            break
         elif abs(joint_positions[i] - correct_joint_positions[i]) > 0.0174533:
             valid = 3
+            break
     # print(f'Correct Joint Positions: \n {correct_joint_positions}')
     try:
         if valid == 2:
