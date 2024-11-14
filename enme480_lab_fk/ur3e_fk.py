@@ -37,10 +37,12 @@ class ForwardKinematicsUR3e(Node):
 
         # Create a CommandUR3e message
         # SET v AND a TO BE === 0.1
-
+        msg = CommandUR3e(destination = joint_positions, v= 0.1,a = 0.1,io_0 = False)
+        
 
         
         # Publish the command
+        self.publisher_.publish(msg)
 
 
         ######################################### END OF YOUR CODE ########################################
@@ -52,17 +54,34 @@ class ForwardKinematicsUR3e(Node):
         print("--------------------- \n Your Laser Prediction \n---------------------")
         KinematicFunctions().predict_laser_position(dh_matrix)
 
-    def calculate_dh_transform(self, joint_positions):
-        
-        
+    def calculate_dh_transform(self, q):
+
+
         ################## YOUR CODE STARTS HERE ###################################
         # Calculate the FINAL TRANSFORMATION MATRIX here using DH parameters
-
+        A0 = np.array([[1, 0, 0, -0.15], [0, 1, 0, 0.15], [0, 0, 1, 0.01], [0, 0, 0, 1]])
+        A1 = self.get_a_matrix(0, -np.pi/2, 0.15185, q[0])
+        A2 = self.get_a_matrix(0.24355, 0, 0, q[1])
+        A3 = self.get_a_matrix(0.2132, 0, 0, q[2])
+        A4 = self.get_a_matrix(0, np.pi/2, 0.13105, q[3] + np.pi/2)
+        A5 = self.get_a_matrix(0, -np.pi/2, 0.08535, q[4])
+        A6 = self.get_a_matrix(0, 0, 0.0921, q[5])
+        A7 = self.get_a_matrix(0.0535, 0, 0.052, np.pi)
+        transform = A0@A1@A2@A3@A4@A5@A6@A7
 
         ################################ YOUR CODE ENDS HERE #########################
         self.get_logger().info(f'Your DH Transformation Matrix:\n{transform}')
 
         return transform
+
+    def get_a_matrix(self, r, alpha, d, theta):
+        return  np.array([
+            [np.cos(theta), -np.sin(theta)*np.cos(alpha),   np.sin(theta)*np.sin(alpha),    r*np.cos(theta)],
+            [np.sin(theta), np.cos(theta)*np.cos(alpha),    -np.cos(theta)*np.sin(alpha),   r*np.sin(theta)], 
+            [0          ,   np.sin(alpha)              ,    np.cos(alpha),                  d],
+            [0          ,   0                           ,   0                           ,   1]
+        ])
+
 
 
 
